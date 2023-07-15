@@ -125,3 +125,16 @@ body {
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+
+body[theme-mode=dark] {
+  /* --semi-color-fill-0: rgba(var(--semi-white), .3) */
+}
+
+.semi-skeleton-paragraph li, .semi-skeleton-title, .semi-skeleton-image{
+  background-color: rgb(55, 65, 81);
+}
+
+.semi-skeleton{
+  @apply animate-pulse
+}

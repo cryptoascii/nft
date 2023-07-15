@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { ConnectWallet, ThirdwebProvider } from "@thirdweb-dev/react";
 import "./styles/globals.css";
 import { Toaster } from "./components/ui/Toaster";
 import { getGasless } from "./utils/getGasless";
@@ -12,6 +12,9 @@ import {
   relayerUrlConst,
 } from "./consts/parameters";
 import { Chain, getChainBySlug } from "@thirdweb-dev/chains";
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
@@ -29,10 +32,8 @@ const tempChain = getChainBySlug(typeof chain === "string" ? chain : chain.slug)
 const activeChain: Chain | string = typeof chain === "string" ? chain : { ...chain, icon: tempChain.icon };
 
 root.render(
-  <React.StrictMode>
-    <ThirdwebProvider activeChain={activeChain} sdkOptions={sdkOptions}>
-      <Toaster />
-      <App />
-    </ThirdwebProvider>
-  </React.StrictMode>,
+  <ThirdwebProvider activeChain={activeChain} sdkOptions={sdkOptions}>
+    <Toaster />
+    <App />
+  </ThirdwebProvider>
 );
