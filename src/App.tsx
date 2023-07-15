@@ -21,14 +21,16 @@ import { parseIneligibility } from "./utils/parseIneligibility";
 import {
   contractConst,
   primaryColorConst,
+  scanUrl,
   themeConst,
 } from "./consts/parameters";
 import { ContractWrapper } from "@thirdweb-dev/sdk/dist/declarations/src/evm/core/classes/contract-wrapper";
 import { AlarmClock } from "lucide-react";
 import Loading from "./components/Loading";
-import { Col, Row, Skeleton } from "@douyinfe/semi-ui";
+import { Col, Row, Skeleton, Typography } from "@douyinfe/semi-ui";
 import ButtonNumber from "./components/ButtonNumber";
 import dayjs from "dayjs";
+import { omitText } from "./lib/utils";
 
 
 const urlParams = new URL(window.location.toString()).searchParams;
@@ -105,6 +107,7 @@ export default function Home() {
       }
     }
   }, [claimConditions, timerNumber]);
+
 
   const numberClaimed = useMemo(() => {
     return BigNumber.from(claimedSupply.data || 0).toString();
@@ -233,13 +236,14 @@ export default function Home() {
       activeClaimCondition.isSuccess &&
       claimIneligibilityReasons.isSuccess &&
       claimIneligibilityReasons.data?.length === 0 &&
-      !isSoldOut
+      !isSoldOut && nextClaimCondition
     );
   }, [
     activeClaimCondition.isSuccess,
     claimIneligibilityReasons.data?.length,
     claimIneligibilityReasons.isSuccess,
     isSoldOut,
+    nextClaimCondition,
   ]);
 
   const isLoading = useMemo(() => {
@@ -367,10 +371,9 @@ export default function Home() {
                       / {activeClaimCondition?.data?.maxClaimableSupply || 0} MINTED
                     </span>
                     {
-                      nextClaimCondition &&
                       <span className="md:ml-10 ml-3">
                         <AlarmClock className="inline-block -mt-2" />
-                        <span className="ml-2 max-md:text-sm">{nextClaimCondition[1]}</span>
+                        <span className="ml-2 max-md:text-sm">{nextClaimCondition?.[1] ?? '0D 0H 0M 0S'}</span>
                       </span>
                     }
 
@@ -470,17 +473,38 @@ export default function Home() {
                           });
                         }}
                       >
-                        {buttonLoading ? (
-                          <Loading />
-                        ) : (
-                          buttonText
-                        )}
+                        <Loading loading={buttonLoading} >
+                          {buttonText}
+                        </Loading>
                       </Web3Button>
                     </div>
                   </div>
                 )}
               </div>
+              <div className="flex gap-2 justify-between max-md:flex-wrap">
+                <div>
+                  <Typography.Title heading={6}>Contract Address</Typography.Title>
+                  <Typography.Text link={{
+                    href: `${scanUrl}/address/${contractAddress}`,
+                    target: '_blank'
+                  }}>{omitText(contractAddress!)}</Typography.Text>
+                </div>
+
+                <div>
+                  <Typography.Title heading={6}>Token standard</Typography.Title>
+                  <Typography.Text >ERC-721</Typography.Text>
+                </div>
+
+                <div>
+                  <Typography.Title heading={6}>BlockChain</Typography.Title>
+                  <Typography.Text>Polygon</Typography.Text>
+                </div>
+              </div>
             </div>
+
+
+
+
           </Col>
         </Row>
       </div>

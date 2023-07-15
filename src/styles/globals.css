@@ -129,17 +129,12 @@ body {
 
 body[theme-mode=dark] {
   /* --semi-color-fill-0: rgba(var(--semi-white), .3) */
-  .semi-skeleton-paragraph li, .semi-skeleton-title{
-    background-color: rgb(55, 65, 81);
-  }
-
-  .semi-skeleton{
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
 }
 
-@keyframes pulse {
-  50% {
-    opacity: .5;
-  }
+.semi-skeleton-paragraph li, .semi-skeleton-title, .semi-skeleton-image{
+  background-color: rgb(55, 65, 81);
+}
+
+.semi-skeleton{
+  @apply animate-pulse
 }

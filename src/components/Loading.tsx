@@ -1,6 +1,10 @@
+import { ReactNode } from "react";
 
-export default function Loading({ show = false }) {
-  if (!show) return null;
+export default function Loading({ loading = false, children }: {
+  loading: boolean,
+  children: ReactNode
+}) {
+  if (!loading) return children;
   return (
     <div role="status">
       <svg

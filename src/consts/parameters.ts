@@ -3,6 +3,8 @@
 // Your smart contract address (available on the thirdweb dashboard)
 // For existing collections: import your existing contracts on the dashboard: https://thirdweb.com/dashboard
 export const contractConst = "0x5709425C54d272d4448949315D5f2CbD42E7e969";
+export const scanUrl = 'https://mumbai.polygonscan.com';
+
 
 // The name of the chain your contract is deployed to.
 // Provide a string for standard chains, or import one from @thirdweb-dev/chains package.
