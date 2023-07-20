@@ -75,6 +75,8 @@ export default function Home() {
 
 
   const claimerProofs = useClaimerProofs(contractQuery.contract, address || "");
+  
+  
 
   const claimIneligibilityReasons = useClaimIneligibilityReasons(
     contractQuery.contract,
@@ -91,7 +93,6 @@ export default function Home() {
     contractQuery.contract,
     0,
   );
-
 
   const nextClaimCondition = useMemo(() => {
     if (!claimConditions.data?.length) return;
