@@ -55,6 +55,7 @@ export default function Home() {
 
   const contractMetadata = useContractMetadata(contractQuery.contract);
   const { toast } = useToast();
+
   const theme = (urlParams.get("theme") || themeConst || "light") as
     | "light"
     | "dark";
@@ -71,8 +72,6 @@ export default function Home() {
     contractQuery.contract,
     address,
   );
-
-  console.log(activeClaimCondition, 'activeClaimCondition');
 
 
   const claimerProofs = useClaimerProofs(contractQuery.contract, address || "");
@@ -94,7 +93,6 @@ export default function Home() {
   );
 
 
-
   const nextClaimCondition = useMemo(() => {
     if (!claimConditions.data?.length) return;
     for (const item of claimConditions.data as any) {
@@ -106,12 +104,12 @@ export default function Home() {
         return [item, formattedDuration];
       }
     }
-  }, [claimConditions, timerNumber]);
+  }, [claimConditions.data, timerNumber]);
 
 
   const numberClaimed = useMemo(() => {
-    return BigNumber.from(claimedSupply.data || 0).toString();
-  }, [claimedSupply]);
+    return activeClaimCondition.data?.currentMintSupply || 0;
+  }, [activeClaimCondition]);
 
 
   const numberTotal = useMemo(() => {
@@ -119,8 +117,6 @@ export default function Home() {
       .add(BigNumber.from(unclaimedSupply.data || 0))
       .toString();
   }, [claimedSupply.data, unclaimedSupply.data]);
-
-  console.log(BigNumber.from(claimedSupply.data || 0).toString(), BigNumber.from(unclaimedSupply.data || 0).toString(), '123');
 
 
   const priceToMint = useMemo(() => {
@@ -236,14 +232,14 @@ export default function Home() {
       activeClaimCondition.isSuccess &&
       claimIneligibilityReasons.isSuccess &&
       claimIneligibilityReasons.data?.length === 0 &&
-      !isSoldOut && nextClaimCondition
+      !isSoldOut// && nextClaimCondition
     );
   }, [
     activeClaimCondition.isSuccess,
     claimIneligibilityReasons.data?.length,
     claimIneligibilityReasons.isSuccess,
     isSoldOut,
-    nextClaimCondition,
+    // nextClaimCondition,
   ]);
 
   const isLoading = useMemo(() => {
@@ -364,21 +360,28 @@ export default function Home() {
                   placeholder={<Skeleton.Title />}
                   loading={isLoading || isOpenEdition}
                 >
-                  <p>
-                    <span className="text-lg font-bold tracking-wider text-gray-500 xs:text-xl lg:text-2xl">
-                      {numberClaimed}
-                    </span>&nbsp;
-                    <span className="text-lg font-bold tracking-wider xs:text-xl lg:text-2xl">
-                      / {activeClaimCondition?.data?.maxClaimableSupply || 0} MINTED
-                    </span>
-                    {
-                      <span className="md:ml-10 ml-3">
+                  <div className="flex items-center">
+                    <p className="flex-shrink-0">
+                      <span className="text-lg font-bold tracking-wider text-gray-500 xs:text-xl lg:text-2xl">
+                        {numberClaimed}
+                      </span>&nbsp;
+                      <span className="text-lg font-bold tracking-wider xs:text-xl lg:text-2xl">
+                        / {activeClaimCondition?.data?.maxClaimableSupply || 0} MINTED
+                      </span>
+                    </p>
+
+                    <div className="md:ml-4 ml-3 flex-1">
+                      <Skeleton
+                        placeholder={<Skeleton.Title />}
+                        loading={claimConditions.isLoading}>
                         <AlarmClock className="inline-block -mt-2" />
                         <span className="ml-2 max-md:text-sm">{nextClaimCondition?.[1] ?? '0D 0H 0M 0S'}</span>
-                      </span>
-                    }
+                      </Skeleton>
+                    </div>
 
-                  </p>
+
+                  </div>
+
                 </Skeleton>
                 <h1 className="line-clamp-1 text-2xl font-bold xs:text-3xl lg:text-4xl">
                   <Skeleton
